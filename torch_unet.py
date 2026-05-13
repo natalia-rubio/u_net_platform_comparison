@@ -96,9 +96,9 @@ def load_data():
     return train_images, train_labels, test_images, test_labels
 
 def train_model(use_gpu: bool = False,
-                num_epochs: int = 10,    
+                num_epochs: int = 5,    
                 batch_size: int = 16,
-                num_batches: int = 100,
+                num_batches: int = 16,
                 kernel_size: int = 3,
                 pool_size: int = 2):
     train_images, train_labels, test_images, test_labels = load_data()

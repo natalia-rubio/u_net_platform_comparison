@@ -1,5 +1,6 @@
 from torch_unet import train_model
 from matplotlib import pyplot as plt
+import os
 
 default_kernel_size = 3
 default_batch_size = 16
