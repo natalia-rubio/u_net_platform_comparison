@@ -3,7 +3,7 @@
 Generate 256x256 4-bit (16-level) grayscale images with a hollow ellipse,
 plus a binary black-and-white label mask per sample.
 
-Requires Python 3.7+ (use ``python3`` if ``python`` is 2.x on your system).
+Requires Python 3.6+ (use ``python3`` if ``python`` is 2.x on your system).
 
 Background is always darker (lower gray level) than the oval.
 Writes matching filenames: <out>/images/oval_XXXX.png (grayscale),
@@ -18,13 +18,20 @@ Grayscale images are further degraded with random Gaussian blur and Gaussian noi
 label masks stay sharp 0/255.
 """
 
-from __future__ import annotations
+import sys
+
+if sys.version_info < (3, 6):
+    sys.stderr.write(
+        "generate_data.py needs Python 3.6+ (you have %s). "
+        "Try: python3 generate_data.py\n" % sys.version.split()[0]
+    )
+    sys.exit(1)
 
 import argparse
 import math
 import random
 from pathlib import Path
-from typing import Tuple
+
 import torch
 import numpy as np
 from PIL import Image, ImageFilter
@@ -34,7 +41,7 @@ CENTER = (IMAGE_SIZE - 1) / 2.0
 LEVELS = 16  # 4-bit grayscale
 
 
-def random_oval_params(rng: random.Random) -> Tuple[float, float, float, int]:
+def random_oval_params(rng):
     """Semi-major a, semi-minor b, rotation radians, edge width (pixels)."""
     # Ranges chosen so ovals stay inside the canvas with margin.
     a = rng.uniform(55.0, 105.0)
@@ -50,12 +57,7 @@ def random_oval_params(rng: random.Random) -> Tuple[float, float, float, int]:
     return a, b, theta, edge
 
 
-def hollow_oval_mask(
-    a: float,
-    b: float,
-    theta: float,
-    edge: int,
-) -> np.ndarray:
+def hollow_oval_mask(a, b, theta, edge):
     """
     Boolean mask (H, W): True on the hollow oval (annulus between two ellipses).
 
@@ -82,12 +84,12 @@ def hollow_oval_mask(
     return (f_outer <= 1.0) & (f_inner >= 1.0)
 
 
-def to_4bit_gray(arr_0_15: np.ndarray) -> np.ndarray:
+def to_4bit_gray(arr_0_15):
     """Map integer labels 0..15 to uint8 0..255 (standard 4-bit LSB scaling)."""
     return (np.clip(arr_0_15, 0, LEVELS - 1).astype(np.uint8) * 17).clip(0, 255)
 
 
-def add_blur_and_noise(gray: np.ndarray, rng: random.Random) -> np.ndarray:
+def add_blur_and_noise(gray, rng):
     """
     Mild Gaussian blur plus additive Gaussian noise in [0, 255] space.
     Labels are not modified; only saved images are degraded.
@@ -101,7 +103,7 @@ def add_blur_and_noise(gray: np.ndarray, rng: random.Random) -> np.ndarray:
     return np.clip(x, 0.0, 255.0).astype(np.uint8)
 
 
-def render_pair(rng: random.Random) -> Tuple[np.ndarray, np.ndarray]:
+def render_pair(rng):
     """
     Return (grayscale_uint8, label_uint8).
 
@@ -129,10 +131,10 @@ def transform_data():
     labels = [transforms.ToTensor()(Image.open(file)).reshape(1, 1, 256, 256) for file in label_files]
     torch.save(torch.cat(images, dim=0), "data/images.pt")
     torch.save(torch.cat(labels, dim=0), "data/labels.pt")
-    print(f"Transformed {len(images)} images and {len(labels)} labels")
+    print("Transformed {} images and {} labels".format(len(images), len(labels)))
     return
 
-def main() -> None:
+def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("-n", "--count", type=int, default=100, help="Number of images")
     p.add_argument(
@@ -154,13 +156,17 @@ def main() -> None:
     for i in range(args.count):
         gray, label = render_pair(rng)
         gray = add_blur_and_noise(gray, rng)
-        name = f"oval_{i:04d}.png"
+        name = "oval_{:04d}.png".format(i)
         Image.fromarray(gray).save(images_dir / name)
         Image.fromarray(label).save(labels_dir / name)
 
     print(
-        f"Wrote {args.count} pair(s) to {images_dir.resolve()} and "
-        f"{labels_dir.resolve()} ({args.count * 2} files)"
+        "Wrote {} pair(s) to {} and {} ({} files)".format(
+            args.count,
+            images_dir.resolve(),
+            labels_dir.resolve(),
+            args.count * 2,
+        )
     )
 
     transform_data()
