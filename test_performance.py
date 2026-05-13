@@ -2,12 +2,13 @@ from torch_unet import train_model
 from matplotlib import pyplot as plt
 import os
 
+results = {}
 default_kernel_size = 3
 default_batch_size = 16
 default_num_batches = 16
 # Experiment 1: Vary Kernel Size
 print("Experiment 1: Vary Kernel Size")
-kernel_sizes = [3, 5, 7, 9]
+kernel_sizes = [3, 9, 27]
 torch_times = []
 torch_gpu_times = []
 for kernel_size in kernel_sizes:
@@ -28,6 +29,10 @@ plt.legend()
 os.makedirs('results', exist_ok=True)
 plt.savefig('results/kernel_size_perf_comp.pdf')
 plt.savefig('results/kernel_size_perf_comp.png')
+results['kernel_size'] = {
+    'torch': torch_times,
+    'torch_gpu': torch_gpu_times
+}
 
 
 # Experiment 2: Vary Batch Size
@@ -53,7 +58,10 @@ plt.legend()
 os.makedirs('results', exist_ok=True)
 plt.savefig('results/batch_size_perf_comp.pdf')
 plt.savefig('results/batch_size_perf_comp.png')
-
+results['batch_size'] = {
+    'torch': torch_times,
+    'torch_gpu': torch_gpu_times
+}
 # Experiment 3: Vary Number of Batches
 print("Experiment 3: Vary Number of Batches")
 num_batches = [4, 8, 16, 32, 64, 128]
@@ -77,3 +85,11 @@ plt.legend()
 os.makedirs('results', exist_ok=True)
 plt.savefig('results/num_batches_perf_comp.pdf')
 plt.savefig('results/num_batches_perf_comp.png')
+results['num_batches'] = {
+    'torch': torch_times,
+    'torch_gpu': torch_gpu_times
+}
+
+# Save results to json
+with open('results/results.json', 'w') as f:
+    json.dump(results, f)
