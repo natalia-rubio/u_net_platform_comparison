@@ -3,6 +3,8 @@
 Generate 256x256 4-bit (16-level) grayscale images with a hollow ellipse,
 plus a binary black-and-white label mask per sample.
 
+Requires Python 3.7+ (use ``python3`` if ``python`` is 2.x on your system).
+
 Background is always darker (lower gray level) than the oval.
 Writes matching filenames: <out>/images/oval_XXXX.png (grayscale),
 <out>/labels/oval_XXXX.png (BW: 0 = bg, 255 = oval). Default <out> is data/.
@@ -22,6 +24,7 @@ import argparse
 import math
 import random
 from pathlib import Path
+from typing import Tuple
 import torch
 import numpy as np
 from PIL import Image, ImageFilter
@@ -31,7 +34,7 @@ CENTER = (IMAGE_SIZE - 1) / 2.0
 LEVELS = 16  # 4-bit grayscale
 
 
-def random_oval_params(rng: random.Random) -> tuple[float, float, float, int]:
+def random_oval_params(rng: random.Random) -> Tuple[float, float, float, int]:
     """Semi-major a, semi-minor b, rotation radians, edge width (pixels)."""
     # Ranges chosen so ovals stay inside the canvas with margin.
     a = rng.uniform(55.0, 105.0)
@@ -98,7 +101,7 @@ def add_blur_and_noise(gray: np.ndarray, rng: random.Random) -> np.ndarray:
     return np.clip(x, 0.0, 255.0).astype(np.uint8)
 
 
-def render_pair(rng: random.Random) -> tuple[np.ndarray, np.ndarray]:
+def render_pair(rng: random.Random) -> Tuple[np.ndarray, np.ndarray]:
     """
     Return (grayscale_uint8, label_uint8).
 
