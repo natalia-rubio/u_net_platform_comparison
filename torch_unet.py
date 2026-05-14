@@ -104,11 +104,7 @@ def train_model(use_gpu: bool = False,
 
     print(f"Training model with kernel size {kernel_size}, batch size {batch_size}, num batches {num_batches}")
     train_images, train_labels, test_images, test_labels = load_data()
-    assert len(train_images) >= num_batches * batch_size
-    train_images = train_images[:num_batches * batch_size]
-    train_labels = train_labels[:num_batches * batch_size]
-    test_images = test_images[:batch_size]
-    test_labels = test_labels[:batch_size]
+    print(f"Loaded {len(train_images)} train images with shape {train_images.shape}")
 
     unet = UNet()
     optimizer = torch.optim.Adam(unet.parameters(), lr=0.001)
