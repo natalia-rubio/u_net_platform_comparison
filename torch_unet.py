@@ -111,7 +111,7 @@ def train_model(use_gpu: bool = False,
     n_total = len(train_images) + len(test_images)
     print(
         f"Dataset from data/images.pt: {n_total} samples total; "
-        f"train {len(train_images)} (80%), test {len(test_images)} (20%). "
+        f"train {len(train_images)}, test {len(test_images)}. "
         f"Tensor shape {train_images.shape}"
     )
 

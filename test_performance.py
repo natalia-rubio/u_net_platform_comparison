@@ -39,7 +39,7 @@ results['kernel_size'] = {
 
 # Experiment 2: Vary Batch Size
 print("Experiment 2: Vary Batch Size")
-batch_sizes = [4, 8, 16, 32, 64]
+batch_sizes = [4, 8, 16, 32]
 torch_times = []
 torch_gpu_times = []
 for batch_size in batch_sizes:
@@ -68,7 +68,7 @@ results['batch_size'] = {
 }
 # Experiment 3: Vary Number of Batches
 print("Experiment 3: Vary Number of Batches")
-num_batches = [4, 8, 16, 32, 64]
+num_batches = [4, 8, 16, 32]
 torch_times = []
 torch_gpu_times = []
 for num_batches in num_batches:
