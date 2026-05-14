@@ -1,6 +1,6 @@
 # U-Net platform comparison (synthetic ovals)
 
-Small PyTorch project that generates **256×256** synthetic grayscale images with **hollow ellipses**, trains a compact **U-Net** to predict segmentation masks, and includes a **benchmark script** that sweeps hyperparameters and plots timings.
+Small PyTorch project that generates **256×256** synthetic grayscale images with **hollow ellipses**, trains a compact **U-Net** to predict segmentation masks, and includes a **benchmark script** that sweeps hyperparameters and plots timings with and without GPU acceleration.
 
 ## Requirements
 
@@ -53,7 +53,7 @@ python3 torch_unet.py
 
 `train_model()` in `torch_unet.py`:
 
-- Loads the full tensors, then **shuffles** and splits **80% train / 20% test** internally.
+- Loads the full tensors, then **shuffles** and splits into train and test set internally.
 - For each run, it **subsamples** that split: training uses the first `num_batches * batch_size` samples of the train split; test uses the first `batch_size` samples of the test split. That keeps benchmark runs small and comparable.
 - **`use_gpu=True`** moves the model and tensors to CUDA. You need a **PyTorch build with CUDA**; CPU-only wheels will raise an error on `.to("cuda")`.
 
