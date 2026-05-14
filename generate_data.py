@@ -132,6 +132,7 @@ def transform_data():
     torch.save(torch.cat(images, dim=0), "data/images.pt")
     torch.save(torch.cat(labels, dim=0), "data/labels.pt")
     print("Transformed {} images and {} labels".format(len(images), len(labels)))
+    print(images[0].shape, labels[0].shape)
     return
 
 def main():
