@@ -5,6 +5,10 @@ from matplotlib import pyplot as plt
 
 from torch_unet import train_model
 
+# Line + marker style for performance plots (log scales)
+_PLOT_TORCH = {"marker": "o", "linestyle": "-", "markersize": 7}
+_PLOT_GPU = {"marker": "s", "linestyle": "-", "markersize": 7}
+
 results = {}
 default_kernel_size = 3
 default_batch_size = 16
@@ -27,8 +31,8 @@ for kernel_size in kernel_sizes_list:
 print(torch_times)
 print(torch_gpu_times)
 plt.clf()
-plt.plot(kernel_sizes_list, torch_times, label='Torch')
-plt.plot(kernel_sizes_list, torch_gpu_times, label='Torch GPU')
+plt.plot(kernel_sizes_list, torch_times, label="Torch", **_PLOT_TORCH)
+plt.plot(kernel_sizes_list, torch_gpu_times, label="Torch GPU", **_PLOT_GPU)
 plt.xscale('log'); plt.xlabel('Kernel Size')
 plt.yscale('log'); plt.ylabel('Time (s)')
 plt.legend()
@@ -60,8 +64,8 @@ for batch_size in batch_sizes_list:
 print(torch_times)
 print(torch_gpu_times)
 plt.clf()
-plt.plot(batch_sizes_list, torch_times, label='Torch')
-plt.plot(batch_sizes_list, torch_gpu_times, label='Torch GPU')
+plt.plot(batch_sizes_list, torch_times, label="Torch", **_PLOT_TORCH)
+plt.plot(batch_sizes_list, torch_gpu_times, label="Torch GPU", **_PLOT_GPU)
 plt.xscale('log'); plt.xlabel('Batch Size')
 plt.yscale('log'); plt.ylabel('Time (s)')
 plt.legend()
@@ -91,8 +95,8 @@ for nb in num_batches_list:
 print(torch_times)
 print(torch_gpu_times)
 plt.clf()
-plt.plot(num_batches_list, torch_times, label='Torch')
-plt.plot(num_batches_list, torch_gpu_times, label='Torch GPU')
+plt.plot(num_batches_list, torch_times, label="Torch", **_PLOT_TORCH)
+plt.plot(num_batches_list, torch_gpu_times, label="Torch GPU", **_PLOT_GPU)
 plt.xscale('log'); plt.xlabel('Number of Batches')  
 plt.yscale('log'); plt.ylabel('Time (s)')
 plt.legend()
