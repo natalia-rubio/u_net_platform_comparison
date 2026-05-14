@@ -104,8 +104,8 @@ def train_model(use_gpu: bool = False,
 
     print(f"Training model with kernel size {kernel_size}, batch size {batch_size}, num batches {num_batches}")
     train_images, train_labels, test_images, test_labels = load_data()
-    train_images = train_images[num_batches * batch_size:]
-    train_labels = train_labels[num_batches * batch_size:]
+    train_images = train_images[:num_batches * batch_size]
+    train_labels = train_labels[:num_batches * batch_size]
     test_images = test_images[:batch_size]
     test_labels = test_labels[:batch_size]
     n_total = len(train_images) + len(test_images)
