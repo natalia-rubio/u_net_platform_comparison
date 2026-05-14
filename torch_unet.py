@@ -101,6 +101,8 @@ def train_model(use_gpu: bool = False,
                 num_batches: int = 16,
                 kernel_size: int = 3,
                 pool_size: int = 2):
+
+    print(f"Training model with kernel size {kernel_size}, batch size {batch_size}, num batches {num_batches}")
     train_images, train_labels, test_images, test_labels = load_data()
     assert len(train_images) >= num_batches * batch_size
     train_images = train_images[:num_batches * batch_size]
